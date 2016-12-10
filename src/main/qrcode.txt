@@ -1,0 +1,14 @@
+问题解答：
+1.为什么我做出来的二维码扫描只显示文本没有显示网址呢？
+    因为文本内容没有加http,比如 http://www.baidu.com
+
+2.如何实现二维码扫描安装软件
+    以慕课网为例：
+    苹果：https://itunes.app.com/cn/app/mu-ke-wang/id722179140?mt=8
+    安卓：http://www.imooc.com/mobile/appdown
+
+        http://www.imooc.com/mobile/mukewng.apk   这种连接不行吗？
+        答案：可以，但是微信不支持，因为只有腾讯自己域名下的apk也可以通过扫一扫下载
+
+3.如果实现扫描二维码名片
+    VCard是标准通信簿
