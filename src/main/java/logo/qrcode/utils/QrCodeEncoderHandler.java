@@ -32,7 +32,7 @@ public class QrCodeEncoderHandler {
 			String logoPath,int onColor , int offColor) {
 		Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
 		// 指定纠错等级
-		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L ) ;
+		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q ) ;
 		// 指定编码格式
 		hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 		try {
@@ -41,8 +41,10 @@ public class QrCodeEncoderHandler {
 			BitMatrix bitMatrix = new MultiFormatWriter().encode(contents,
 					BarcodeFormat.QR_CODE, width, height, hints);
 			// 0xFFE30022 字体色,0xFFF4C2C2背景色
+//			MyMatrixToImageWriter.writeToFileBack(bitMatrix, "png", imgPath,
+//					new MyMatrixToImageConfig( onColor , offColor ), logoPath);
 			MyMatrixToImageWriter.writeToFile(bitMatrix, "png", imgPath,
-					new MyMatrixToImageConfig( onColor , offColor ), logoPath) ;
+					new MyMatrixToImageConfig( onColor , offColor ), logoPath);
 		} catch (Exception e) {
 			LogManager.err(e);
 		}
@@ -52,7 +54,7 @@ public class QrCodeEncoderHandler {
 		String imgPath = "F:\\qrcode\\img.png";
 		String logoPath = "F:\\qrcode\\logo.jpg";
 		String contents = "http://www.baidu.com/" ;
-		int width = 200, height = 200 ; 
+		int width = 855, height = 855 ;
 		QrCodeEncoderHandler handler = new QrCodeEncoderHandler( ) ; 
 		
 		handler.encode(contents , width, height , imgPath ,

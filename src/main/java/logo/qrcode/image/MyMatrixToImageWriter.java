@@ -5,10 +5,10 @@ import com.google.zxing.common.BitMatrix;
 import logo.qrcode.utils.Helper;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.IOException;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 
@@ -43,6 +43,41 @@ public final class MyMatrixToImageWriter {
     return image;
   }
 
+  public static BufferedImage toBufferedImageBack(BitMatrix matrix, MyMatrixToImageConfig config,String logoPath) throws IOException {
+    int width = matrix.getWidth();
+    int height = matrix.getHeight();
+    int[] pox = matrix.getTopLeftOnBit();
+    BufferedImage image = new BufferedImage(width, height,config.getBufferedImageColorModel());
+
+    int onColor = config.getPixelOnColor();
+    int offColor = config.getPixelOffColor();
+
+    BufferedImage logo = ImageIO.read(new File(logoPath));
+    Graphics2D gs = image.createGraphics();
+//    gs.setBackground(Color.WHITE);
+    gs.drawImage(logo,pox[0],pox[1],width-pox[0]*2,height-pox[1]*2,null);
+
+//    gs.dispose();
+//    image = g2d.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+//    g2d.dispose();
+//    g2d = image.createGraphics();
+    BufferedImage qr = new BufferedImage(width, height,config.getBufferedImageColorModel());
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        qr.setRGB(x, y, matrix.get(x, y) ? onColor : offColor);
+      }
+    }
+    float alpha = 0.2f; // 透明度
+    gs.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,
+            alpha));
+    // 表示水印图片的位置
+    gs.drawImage(qr,0,0,width,height,null);
+    gs.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+
+    gs.dispose();
+    return image;
+  }
+
   /**
    * Writes a {@link BitMatrix} to a file.
    *
@@ -66,7 +101,18 @@ public final class MyMatrixToImageWriter {
     	 ImageIO.write(image, "png", new File(imgPath));  
     }
   }
-  
+
+  public static void writeToFileBack(BitMatrix matrix, String format, String imgPath, MyMatrixToImageConfig config,String logoPath)
+          throws IOException {
+    BufferedImage image = toBufferedImageBack(matrix, config,logoPath);
+    ImageIO.write(image, "png", new File(imgPath));
+//    if(!Helper.isNull(logoPath)){
+//      //添加logo
+//      overlapImage(image,imgPath,logoPath);
+//    }else{
+//      ImageIO.write(image, "png", new File(imgPath));
+//    }
+  }
   /**
    * 二维码添加自定义logo
    */
@@ -78,8 +124,8 @@ public final class MyMatrixToImageWriter {
 	      int height=image.getHeight()/5;
 	      int x=(image.getWidth()-width)/2;
           int y=(image.getHeight()-height)/2;
-          g.drawImage(logo, x, y, width, height, null); 
-          g.dispose(); 
+          g.drawImage(logo, x, y, width, height, null);
+          g.dispose();
           ImageIO.write(image, "png", new File(imgPath)); 
         } catch (Exception e) { 
           e.printStackTrace(); 
