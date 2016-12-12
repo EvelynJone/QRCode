@@ -49,7 +49,27 @@ public class QrCodeEncoderHandler {
 			LogManager.err(e);
 		}
 	}
-
+	public void encode(String contents, int width, int height, String imgPath,
+					   String logoPath) {
+		Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
+		// 指定纠错等级
+		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q ) ;
+		// 指定编码格式
+		hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+		try {
+			hints.put(EncodeHintType.MARGIN, 1 );
+			// 设置生成二维码的类型
+			BitMatrix bitMatrix = new MultiFormatWriter().encode(contents,
+					BarcodeFormat.QR_CODE, width, height, hints);
+			// 0xFFE30022 字体色,0xFFF4C2C2背景色
+//			MyMatrixToImageWriter.writeToFileBack(bitMatrix, "png", imgPath,
+//					new MyMatrixToImageConfig( onColor , offColor ), logoPath);
+			MyMatrixToImageWriter.writeToFile(bitMatrix, "png", imgPath,
+					new MyMatrixToImageConfig(), logoPath);
+		} catch (Exception e) {
+			LogManager.err(e);
+		}
+	}
 	public static void main(String[] args) {
 		String imgPath = "F:\\qrcode\\img.png";
 		String logoPath = "F:\\qrcode\\logo.jpg";
@@ -58,7 +78,7 @@ public class QrCodeEncoderHandler {
 		QrCodeEncoderHandler handler = new QrCodeEncoderHandler( ) ; 
 		
 		handler.encode(contents , width, height , imgPath ,
-				logoPath , 0x74A327 ,0xFFFFFFF );  
+				logoPath);
 	}
 }
 
